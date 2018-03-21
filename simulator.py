@@ -43,7 +43,7 @@ def getkline(timeframe,start,end=None):
     api=BitfinexAPI()
     res=api.klines(conf.pair,timeframe,start=start,end=end)
     if not res is None:
-        res['time']=[str(time.mktime(t.timetuple())) for t in res.index]
+        res['time']=[str(base.datetime_toTimestamp(t)) for t in res.index]
     return res
 
 def getticker(pair):
@@ -71,7 +71,7 @@ def getclose(closetype=0):
 
 
 def savekline_db(kline,dropdb=False):
-    kline['time']=[str(time.mktime(t.timetuple())) for t in kline.index]
+    kline['time']=[str(base.datetime_toTimestamp(t)) for t in kline.index]
     db=DatabaseInterface(conf.usedb)
     if dropdb:
         db.db_drop('KLINE_CURRENT')
@@ -81,7 +81,7 @@ def getkline_db():
     db=DatabaseInterface(conf.usedb)
     kline=db.db_find([],'KLINE_CURRENT',filter_dic={},sort=[("time", 1)])
     kline.set_index('time',inplace=True)
-    kline.index=[datetime.datetime.fromtimestamp(float(var)) for var in kline.index]
+    kline.index=[base.timestamp_toDatetime(float(var)) for var in kline.index]
     return kline
     
 def compresskline(data,field,timeframe,pcttype='ma3',k=0.7,cbkline=True,rmnoise=True):
@@ -100,21 +100,6 @@ def compresskline(data,field,timeframe,pcttype='ma3',k=0.7,cbkline=True,rmnoise=
         dt.loc[data.index[-1]]=data.iloc[-1,:]
 
     return dt.sort_index()
-
-#def compresskline_single(data,field,timeframe,pcttype='ma3',k=0.7,cbkline=True,rmnoise=True):
-#    dt=data.copy()
-#    pct=dt[field].iloc[-1]
-#    if rmnoise:
-#        db=DatabaseInterface(conf.usedb)
-#        statrange=db.db_find(['r0','r1'],'STATPARAS',filter_dic={'timeframe':timeframe,'pcttype':pcttype,'k':k},sort=[("time", -1)],limit=1)
-#        r0,r1=statrange['r0'].loc[0],statrange['r1'].loc[0]
-#
-#    statend=kline.index[-1]
-#    pct=kline['ma_pct_change'].loc[statend]
-#    r0,r1=get_conf(statend,statperiod=statperiod,k=k)
-#    if ((pct>r0) & (pct<r1)):
-#        return kline.drop(kline.index[-2])
-#    return kline
 
 def set_order(side,price=None,volume=None,note=None):
     db=DatabaseInterface(conf.usedb)
@@ -238,7 +223,7 @@ def inittrend(ma_units=3,pretrend_length=56):
 #    starttime=(lasttime-pretrend_length*conf.timeframe_as_minute*60)*1000
 #    data=db.db_find(['time','close','pct_change'],'KLINE'+timeframe,filter_dic={"time": {"$gt": starttime}})
     data.set_index('time',inplace=True)
-    data.index=[datetime.datetime.fromtimestamp(float(var)) for var in data.index]
+    data.index=[base.timestamp_toDatetime(float(var)) for var in data.index]
     data.sort_index(inplace=True)
     data['ma']=pd.ewma(data['close'],span=ma_units)
     data['ma_pct_change']=data['ma'].pct_change()*100
@@ -289,7 +274,7 @@ def trading(ma_units=3):
 #    starttime=(lasttime-pretrend_length*conf.timeframe_as_minute*60)*1000
 #    data=db.db_find(['time','close','pct_change'],'KLINE'+timeframe,filter_dic={"time": {"$gt": starttime}})
     ndata.set_index('time',inplace=True)
-    ndata.index=[datetime.datetime.fromtimestamp(float(var)) for var in ndata.index]
+    ndata.index=[base.timestamp_toDatetime(float(var)) for var in ndata.index]
     nkline=pd.concat([kline,ndata])
     nkline['ma']=pd.ewma(nkline['close'],span=ma_units)
     nkline['ma_pct_change']=nkline['ma'].pct_change()*100

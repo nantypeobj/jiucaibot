@@ -12,7 +12,8 @@ import math
 import datetime
 import string
 import time
-import decimal
+import pytz
+from tzlocal import get_localzone
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 
@@ -75,16 +76,31 @@ def datetime_toStr(var,dateformat="%Y%m%d"):
 
 def timestamp_toStr(var,dateformat="%Y%m%d %H:%M:%S"):
     try:
-       return datetime_toStr(datetime.datetime.fromtimestamp(float(var)),dateformat=dateformat)
+       return datetime_toStr(timestamp_toDatetime(var),dateformat=dateformat)
     except:
         return var
 
-def timestamp_toDatetime(var):
+def timestamp_toDatetime(var,timezone='Asia/Shanghai'):
     check_empty(var)
-    if isIter(var):
-        return [datetime.datetime.fromtimestamp(v/1000) for v in var]
+    if len(str(var))>10:
+        var=var/(10**(len(str(var))-10))
+    
+    if timezone:
+        localtz = pytz.timezone(timezone)
+        f=lambda v:datetime.datetime.fromtimestamp(v).replace(tzinfo=localtz)
     else:
-        return datetime.datetime.fromtimestamp(var/1000)
+        f=lambda v:datetime.datetime.fromtimestamp(v)
+        
+    if isIter(var):
+        return [f(v) for v in var]
+    else:
+        return f(var)
+
+def datetime_toTimestamp(t,timezone=None):
+    if not timezone:
+        timezone=get_localzone()
+        t.replace(tzinfo=timezone)
+    return time.mktime(t.timetuple())*1000
 
 
 #将str转为datetime
