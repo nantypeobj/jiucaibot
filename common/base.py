@@ -82,7 +82,7 @@ def timestamp_toStr(var,dateformat="%Y%m%d %H:%M:%S"):
 
 def timestamp_toDatetime(var,timezone='Asia/Shanghai'):
     check_empty(var)
-    if len(str(var))>10:
+    if len(str(int(var)))>10:
         var=var/(10**(len(str(var))-10))
     
     if timezone:
