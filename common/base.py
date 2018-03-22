@@ -87,7 +87,7 @@ def timestamp_toDatetime(var,timezone='Asia/Shanghai'):
     
     if timezone:
         localtz = pytz.timezone(timezone)
-        f=lambda v:datetime.datetime.fromtimestamp(v).replace(tzinfo=localtz)
+        f=lambda v:datetime.datetime.fromtimestamp(v,localtz)
     else:
         f=lambda v:datetime.datetime.fromtimestamp(v)
         
