@@ -400,16 +400,16 @@ def checkwave(pts,wave_threshold=0.7):
 #    #inittrend()
 #    now=datetime.datetime.now()
 #    #15min的情况
-#    starttimes= pd.Series([15,30,45,60])
-#    if now.minute in starttimes:
-#        waittime=0
-#    else:
-#        waittime=(starttimes[starttimes-now.minute>0].min()-now.minute)*60+1
-#        
-#    scheduler = BlockingScheduler()
-#    scheduler.add_job(trading, 'interval',minutes=15)
-#    scheduler.add_job(risktracking, 'interval',minutes=7)
-#    print ('waiting for'+str(waittime)+'s to start')
-#    time.sleep(waittime)
-#    print ('trading start at'+ base.get_currenttime_asstr())
-#    scheduler.start()
+    starttimes= pd.Series([15,30,45,60])
+    if now.minute in starttimes:
+        waittime=0
+    else:
+        waittime=(starttimes[starttimes-now.minute>0].min()-now.minute)*60+1
+        
+    scheduler = BlockingScheduler()
+    scheduler.add_job(trading, 'interval',minutes=15)
+    scheduler.add_job(risktracking, 'interval',minutes=7)
+    print ('waiting for'+str(waittime)+'s to start')
+    time.sleep(waittime)
+    print ('trading start at'+ base.get_currenttime_asstr())
+    scheduler.start()
