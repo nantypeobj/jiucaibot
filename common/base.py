@@ -96,7 +96,7 @@ def timestamp_toDatetime(var,timezone='Asia/Shanghai'):
     else:
         return f(var)
 
-def datetime_toTimestamp(t,timezone=None):
+def datetime_toTimestamp(t,timezone='Asia/Shanghai'):
     if not timezone:
         timezone=get_localzone()
         t.replace(tzinfo=timezone)
@@ -122,7 +122,7 @@ def toDatetime(var,dateformat="%Y%m%d"):
 def str_toTimestamp(var,dateformat="%Y%m%d %H:%M:%S"):
     if type(var)!=str:
         return var
-    return time.mktime(str_toDatetime(var,dateformat=dateformat).timetuple())
+    return datetime_toTimestamp(str_toDatetime(var,dateformat=dateformat))
 
 
 
