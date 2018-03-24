@@ -189,15 +189,15 @@ def gettrend(data,timeframe,ma_units=3,inittrenddb=False):
     
     kline=compresskline(data,'ma_pct_change',timeframe,pcttype='ma3',k=0.7,cbkline=True,rmnoise=True)
     kline=analyzetrend(kline)
-    plt.plot(data.index,data['close'])
-    plt.plot(kline.index,kline['ma'])
+   # plt.plot(data.index,data['close'])
+   # plt.plot(kline.index,kline['ma'])
 
-    for x in kline.index[kline['trend']==1]:
-        plt.axvline(x=x,color='red',lw=0.5)
-    for x in kline.index[kline['trend']==-1]:
-            plt.axvline(x=x,color='green',lw=0.5)
-    for x in kline.index[kline['trend']==0]:
-            plt.axvline(x=x,color='yellow',lw=0.5)
+   # for x in kline.index[kline['trend']==1]:
+   #     plt.axvline(x=x,color='red',lw=0.5)
+   # for x in kline.index[kline['trend']==-1]:
+   #         plt.axvline(x=x,color='green',lw=0.5)
+   # for x in kline.index[kline['trend']==0]:
+   #         plt.axvline(x=x,color='yellow',lw=0.5)
     try:
         data=data.drop(['_id','trend'],axis=1)
     except ValueError:
@@ -208,14 +208,14 @@ def gettrend(data,timeframe,ma_units=3,inittrenddb=False):
 def viewkline():
     kline=getkline_db()
     kline_cmp=compresskline(kline,'ma_pct_change',conf.timeframe)
-    plt.plot(kline.index,kline['close'])
-    plt.plot(kline_cmp.index,kline_cmp['ma'])
-    for x in kline.index[kline['trend']==1]:
-        plt.axvline(x=x,color='red',lw=0.5)
-    for x in kline.index[kline['trend']==-1]:
-            plt.axvline(x=x,color='green',lw=0.5)
-    for x in kline.index[kline['trend']==0]:
-            plt.axvline(x=x,color='yellow',lw=0.5)
+   # plt.plot(kline.index,kline['close'])
+   # plt.plot(kline_cmp.index,kline_cmp['ma'])
+   # for x in kline.index[kline['trend']==1]:
+   #     plt.axvline(x=x,color='red',lw=0.5)
+   # for x in kline.index[kline['trend']==-1]:
+   #         plt.axvline(x=x,color='green',lw=0.5)
+   # for x in kline.index[kline['trend']==0]:
+   #         plt.axvline(x=x,color='yellow',lw=0.5)
 
 
 
@@ -395,10 +395,10 @@ def checkwave(pts,wave_threshold=0.7):
         else:
             return trend
         
-#if __name__ == '__main__':
-#    #initsys()
-#    #inittrend()
-#    now=datetime.datetime.now()
+if __name__ == '__main__':
+    initsys()
+    inittrend()
+    now=datetime.datetime.now()
 #    #15min的情况
     starttimes= pd.Series([15,30,45,60])
     if now.minute in starttimes:

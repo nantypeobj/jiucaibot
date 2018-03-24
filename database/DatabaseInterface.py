@@ -5,8 +5,8 @@ Created on Mon Apr 18 18:47:37 2016
 @author: warriorzhai
 """
 PATH=r'C:\Users\Administrator.ZX-201609072125\Desktop\cryptocurrency'
-import os,sys
-os.chdir(path=PATH)
+#import os,sys
+#os.chdir(path=PATH)
 import sys
 import pymongo
 import time
