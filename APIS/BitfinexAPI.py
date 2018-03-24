@@ -120,7 +120,7 @@ class BitfinexAPI(RESTAPI):
                       start=None,end=None,loop_gap=1):
         end=base.get_currenttime_asstr() if not end else end
         start=base.date_togapn(end,dateformat="%Y%m%d %H:%M:%S",**period) if start is None else start
-        start,end=[int(base.str_toTimestamp(x)*1000) for x in [start,end]]
+        start,end=[int(base.str_toTimestamp(x)) for x in [start,end]]
         
         unit_val=int(re.findall('[0-9]+',timeframe)[0])
         if timeframe[-1]=='m':
