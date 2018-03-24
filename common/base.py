@@ -98,9 +98,10 @@ def timestamp_toDatetime(var,timezone='Asia/Shanghai'):
 
 def datetime_toTimestamp(t,timezone='Asia/Shanghai'):
     if not timezone:
-        timezone=get_localzone()
-        t.replace(tzinfo=timezone)
-    return time.mktime(t.timetuple())*1000
+        tz=get_localzone()
+    else:
+        tz=pytz.timezone(timezone)
+    return (t.replace(tzinfo=tz).timestamp()+6*60)*1000
 
 
 #将str转为datetime

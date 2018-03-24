@@ -22,20 +22,21 @@ Created on Mon Feb 19 15:05:47 2018
 import os,sys
 #os.chdir(path=r'C:\Users\Administrator.ZX-201609072125\Desktop\cryptocurrency\trading_simulator')
 from APIS.BitfinexAPI import BitfinexAPI
+import common.base as base
+from database.DatabaseInterface import DatabaseInterface
+import simu_config as conf
+
 from web.Connection import Connection 
 from apscheduler.schedulers.blocking import BlockingScheduler
 import pandas as pd
 from matplotlib import pyplot as plt
 import numpy as np
-import common.base as base
 from multiprocessing.pool import ThreadPool
 from sklearn import preprocessing
 from dateutil.relativedelta import relativedelta
-from database.DatabaseInterface import DatabaseInterface
 import datetime
 import time
 import seaborn as sns
-import simu_config as conf
 sns.set_style('white')
 
 #====交易系统初始化============
