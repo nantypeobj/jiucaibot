@@ -74,9 +74,9 @@ def datetime_toStr(var,dateformat="%Y%m%d"):
     except:
         return var
 
-def timestamp_toStr(var,dateformat="%Y%m%d %H:%M:%S"):
+def timestamp_toStr(var,dateformat="%Y%m%d %H:%M:%S",timezone='Asia/Shanghai'):
     try:
-       return datetime_toStr(timestamp_toDatetime(var),dateformat=dateformat)
+       return datetime_toStr(timestamp_toDatetime(var,timezone=timezone),dateformat=dateformat)
     except:
         return var
 
@@ -178,8 +178,8 @@ def write_csv(df,filenam,filetype):
         pass
     
 def get_currenttime_asstr(dateformat="%Y%m%d %H:%M:%S"):
-    now=datetime.datetime.now()
-    return datetime_toStr(now,dateformat=dateformat)
+    now=int(time.time())
+    return timestamp_toStr(now,dateformat=dateformat)
 
 def get_today_asstr():
     return get_currenttime_asstr(dateformat="%Y%m%d")
