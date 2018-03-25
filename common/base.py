@@ -83,7 +83,7 @@ def timestamp_toStr(var,dateformat="%Y%m%d %H:%M:%S",timezone='Asia/Shanghai'):
 def timestamp_toDatetime(var,timezone='Asia/Shanghai'):
     check_empty(var)
     if len(str(int(float(var))))>10:
-        var=var/(10**(len(str(var))-10))
+        var=var*1.0/(10**(len(str(int(float(var))))-10))
     
     if timezone:
         localtz = pytz.timezone(timezone)
@@ -96,13 +96,15 @@ def timestamp_toDatetime(var,timezone='Asia/Shanghai'):
     else:
         return f(var)
 
-def datetime_toTimestamp(t,timezone='Asia/Shanghai'):
+def datetime_toTimestamp(t,timezone='Asia/Shanghai',timelen=13):
     if not timezone:
         tz=get_localzone()
     else:
         tz=pytz.timezone(timezone)
-    return (t.replace(tzinfo=tz).timestamp()+6*60)*1000
-
+    t=(t.replace(tzinfo=tz).timestamp()+6*60)
+    if len(str(int(float(t))))<timelen:
+        t=t*(10**(timelen-len(str(int(float(t))))))
+    return t
 
 #将str转为datetime
 #var--str变量   

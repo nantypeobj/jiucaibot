@@ -15,7 +15,7 @@ class BitfinexAPI(RESTAPI):
     
     def __init__(self,apiname='BITFINEX'):
         key,secret=settings.APIKEY[apiname]
-        super(BitfinexAPI, self). __init__(key,secret,apiname,use_proxy=False)
+        super(BitfinexAPI, self). __init__(key,secret,apiname,use_proxy=True)
     
     def get_data(self,url):
         for i in range(3):
@@ -142,7 +142,7 @@ class BitfinexAPI(RESTAPI):
             klinedata.append(self.candels(pair,timeframe,start=start,end=end,limit=limit))
             gap=gap-limit
             start=start+unit*limit*1000
-            time.sleep(loop_gap)
+            time.sleep(6)
         
         if len(klinedata)==0:
             return None

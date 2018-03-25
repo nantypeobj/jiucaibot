@@ -20,23 +20,22 @@ Created on Mon Feb 19 15:05:47 2018
 """
 
 import os,sys
-#os.chdir(path=r'C:\Users\Administrator.ZX-201609072125\Desktop\cryptocurrency\trading_simulator')
+#os.chdir(path=r'C:\Users\Administrator.ZX-201609072125\Desktop\cryptocurrency')
 from APIS.BitfinexAPI import BitfinexAPI
-import common.base as base
-from database.DatabaseInterface import DatabaseInterface
-import simu_config as conf
-
 from web.Connection import Connection 
 from apscheduler.schedulers.blocking import BlockingScheduler
 import pandas as pd
 from matplotlib import pyplot as plt
 import numpy as np
+import common.base as base
 from multiprocessing.pool import ThreadPool
 from sklearn import preprocessing
 from dateutil.relativedelta import relativedelta
+from database.DatabaseInterface import DatabaseInterface
 import datetime
 import time
 import seaborn as sns
+import simu_config as conf
 sns.set_style('white')
 
 #====交易系统初始化============
@@ -167,7 +166,7 @@ def updatepctrange(timeframe,pcttype='ma3',statdata_length=1500):
 def inithistdata(timeframe='15m'):
     db=DatabaseInterface(conf.usedb)
     lastrow=db.db_findone('KLINE'+timeframe,filter_dic={},sel_fields=[],sort=[("time", -1)])#['time']/1000
-    lasttime=base.timestamp_toStr(float(lastrow['time'])/1000.0+1,dateformat="%Y%m%d %H:%M:%S")
+    lasttime=base.timestamp_toStr(float(lastrow['time'])+1,dateformat="%Y%m%d %H:%M:%S")
     df=getkline(timeframe,lasttime,end=None)
 
     if not df is None:
@@ -190,15 +189,15 @@ def gettrend(data,timeframe,ma_units=3,inittrenddb=False):
     
     kline=compresskline(data,'ma_pct_change',timeframe,pcttype='ma3',k=0.7,cbkline=True,rmnoise=True)
     kline=analyzetrend(kline)
-   # plt.plot(data.index,data['close'])
-   # plt.plot(kline.index,kline['ma'])
+    plt.plot(data.index,data['close'])
+    plt.plot(kline.index,kline['ma'])
 
-   # for x in kline.index[kline['trend']==1]:
-   #     plt.axvline(x=x,color='red',lw=0.5)
-   # for x in kline.index[kline['trend']==-1]:
-   #         plt.axvline(x=x,color='green',lw=0.5)
-   # for x in kline.index[kline['trend']==0]:
-   #         plt.axvline(x=x,color='yellow',lw=0.5)
+    for x in kline.index[kline['trend']==1]:
+        plt.axvline(x=x,color='red',lw=0.5)
+    for x in kline.index[kline['trend']==-1]:
+            plt.axvline(x=x,color='green',lw=0.5)
+    for x in kline.index[kline['trend']==0]:
+            plt.axvline(x=x,color='yellow',lw=0.5)
     try:
         data=data.drop(['_id','trend'],axis=1)
     except ValueError:
@@ -206,22 +205,7 @@ def gettrend(data,timeframe,ma_units=3,inittrenddb=False):
     data=pd.concat([data,kline['trend']],axis=1)
     return data
 
-def viewkline():
-    kline=getkline_db()
-    kline_cmp=compresskline(kline,'ma_pct_change',conf.timeframe)
-   # plt.plot(kline.index,kline['close'])
-   # plt.plot(kline_cmp.index,kline_cmp['ma'])
-   # for x in kline.index[kline['trend']==1]:
-   #     plt.axvline(x=x,color='red',lw=0.5)
-   # for x in kline.index[kline['trend']==-1]:
-   #         plt.axvline(x=x,color='green',lw=0.5)
-   # for x in kline.index[kline['trend']==0]:
-   #         plt.axvline(x=x,color='yellow',lw=0.5)
-
-
-
     
-
 def inittradepara(pair,symbol,cash,bal1,bal2,bal3):
     db=DatabaseInterface(conf.usedb)
     db.db_drop('WALLET')
@@ -400,7 +384,7 @@ if __name__ == '__main__':
     initsys()
     inittrend()
     now=datetime.datetime.now()
-#    #15min的情况
+    #15min的情况
     starttimes= pd.Series([15,30,45,60])
     if now.minute in starttimes:
         waittime=0
@@ -410,7 +394,6 @@ if __name__ == '__main__':
     scheduler = BlockingScheduler()
     scheduler.add_job(trading, 'interval',minutes=15)
     scheduler.add_job(risktracking, 'interval',minutes=7)
-    print ('waiting for'+str(waittime)+'s to start')
     time.sleep(waittime)
     print ('trading start at'+ base.get_currenttime_asstr())
     scheduler.start()
