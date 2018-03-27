@@ -189,15 +189,15 @@ def gettrend(data,timeframe,ma_units=3,inittrenddb=False):
     
     kline=compresskline(data,'ma_pct_change',timeframe,pcttype='ma3',k=0.7,cbkline=True,rmnoise=True)
     kline=analyzetrend(kline)
-    plt.plot(data.index,data['close'])
-    plt.plot(kline.index,kline['ma'])
+#    plt.plot(data.index,data['close'])
+#    plt.plot(kline.index,kline['ma'])
 
-    for x in kline.index[kline['trend']==1]:
-        plt.axvline(x=x,color='red',lw=0.5)
-    for x in kline.index[kline['trend']==-1]:
-            plt.axvline(x=x,color='green',lw=0.5)
-    for x in kline.index[kline['trend']==0]:
-            plt.axvline(x=x,color='yellow',lw=0.5)
+#   for x in kline.index[kline['trend']==1]:
+#        plt.axvline(x=x,color='red',lw=0.5)
+#    for x in kline.index[kline['trend']==-1]:
+#            plt.axvline(x=x,color='green',lw=0.5)
+#    for x in kline.index[kline['trend']==0]:
+#            plt.axvline(x=x,color='yellow',lw=0.5)
     try:
         data=data.drop(['_id','trend'],axis=1)
     except ValueError:
@@ -278,7 +278,7 @@ def trading(ma_units=3):
     nkline=pd.concat([kline,ndata])
     nkline['ma']=pd.ewma(nkline['close'],span=ma_units)
     nkline['ma_pct_change']=nkline['ma'].pct_change()*100
-    print ('计算最新趋势....')
+    print (base.get_currenttime_asstr()+'计算最新趋势....')
     trendkline=gettrend(nkline,conf.timeframe,ma_units=3)
     ntrendrow=pd.DataFrame(trendkline.loc[trendkline.index[-1]]).T
     savekline_db(ntrendrow,
@@ -291,7 +291,7 @@ def trading(ma_units=3):
     print ('持仓不变....')
 
 def risktracking():
-    print ('止损/止盈处理.....')
+    print (base.get_currenttime_asstr()+'止损/止盈处理.....')
     balance,cost=getposition(conf.pair)
     
     
