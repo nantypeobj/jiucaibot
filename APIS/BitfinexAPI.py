@@ -17,6 +17,7 @@ class BitfinexAPI(RESTAPI):
         key,secret=settings.APIKEY[apiname]
         super(BitfinexAPI, self). __init__(key,secret,apiname,use_proxy=True)
     
+    
     def get_data(self,url):
         for i in range(3):
             try:
@@ -24,15 +25,16 @@ class BitfinexAPI(RESTAPI):
             except Exception as e:
                 msg=str(e).lower()
                 if re.search('rate',msg):
-                    self.use_proxy=(self.use_proxy==False)
-                    try:
-                        return self.get(url)
-                    except Exception as e:
-                        if re.search('rate',str(e).lower()):
-                            time.sleep(60)
-                            continue
-                        else:
-                            raise Exception(e)
+                    print ('reach rate limit...wait for a minute to retry..')
+                    time.sleep(60)
+                    continue
+                elif re.search('10020',msg):
+                    print ('Request parameters error...')
+                    raise Exception(e)
+                elif re.search('11000',msg):
+                    print ('temporary disconnection,retrying...')
+                    time.sleep(5)
+                    continue
                 else:
                     raise Exception(e)
             else:

@@ -252,9 +252,13 @@ def get_tradingsignal(kline):
     return None
 
 def handle_tradingsignal(sig):
+    balance=getposition(conf.pair)[0]
+
     if sig=='clear':
         clear_position()
     else:
+        if (sig=='buy' and balance<0) or (sig=='sell' and balance>0):
+            clear_position()
         set_order(sig,price=None,volume=None)
     
     
