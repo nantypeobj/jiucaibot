@@ -125,10 +125,10 @@ def set_order(side,price=None,volume=None,note=None):
 def clear_position(note=None):
     balance=getposition(conf.pair)[0]
     if balance>0:
-        return set_order('sell',note='clear' if note is None else note)
+        return set_order('sell',volume=balance,note='clear' if note is None else note)
 
     elif balance<0:
-        return set_order('buy',note='clear' if note is None else note)
+        return set_order('buy',volume=balance,note='clear' if note is None else note)
 
     else:
         return None
@@ -244,7 +244,7 @@ def get_tradingsignal(kline):
                 return 'buy' if trends[-1]>0 else 'sell'
         else:
             if (trends[-2]!=0) and (trends[-3]==0):
-                return ['clear']
+                return 'clear'
     else:
         if trends[-1]==0 and trends[-3]!=0:
             return 'clear'
