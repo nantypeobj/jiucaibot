@@ -125,10 +125,10 @@ def set_order(side,price=None,volume=None,note=None):
 def clear_position(note=None):
     balance=getposition(conf.pair)[0]
     if balance>0:
-        return set_order('sell',volume=balance,note='clear' if note is None else note)
+        return set_order('sell',volume=abs(balance),note='clear' if note is None else note)
 
     elif balance<0:
-        return set_order('buy',volume=balance,note='clear' if note is None else note)
+        return set_order('buy',volume=abs(balance),note='clear' if note is None else note)
 
     else:
         return None
@@ -306,14 +306,14 @@ def risktracking():
         print ('当前仓位为多仓，仓位均价='+str(avg_price)+',当前bid价格='+str(close))
         if close<avg_price*(1-conf.losestoprate) or (conf.winstoprate and close>avg_price*(1+conf.winstoprate)):
             print('触发止损线='+str(conf.losestoprate) if close<avg_price else '触发止盈线='+str(conf.winstoprate))
-            clear_position(note='stoplose')
+            clear_position(note='stoplose' if close<avg_price else 'stopwin')
     elif balance<0:
         avg_price=abs(cost)/abs(balance)
         close=getclose(closetype=1)[0]
         print ('当前仓位为空仓，仓位均价='+str(avg_price)+',当前ask价格='+str(close))
         if close>avg_price*(1+conf.losestoprate) or (conf.winstoprate and close<avg_price*(1-conf.winstoprate)):
             print('触发止损线='+str(conf.losestoprate) if close>avg_price else '触发止盈线='+str(conf.winstoprate))
-            clear_position(note='stopwin')
+            clear_position(note='stoplose' if close>avg_price else 'stopwin')
     else:
         print ('当前未开仓.....')
         return True
